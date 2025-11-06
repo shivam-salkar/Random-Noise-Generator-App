@@ -24,8 +24,13 @@ def generateFrame():
     cv.circle(img=frame, center=(np.random.randint(0, 499), np.random.randint(0, 499)), radius=np.random.randint(0, 16), thickness=-1, color=0)
     cv.circle(img=frame, center=(np.random.randint(0, 499), np.random.randint(0, 499)), radius=np.random.randint(0, 16), thickness=-1, color=255)
   frame = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)
-  frame = cv.GaussianBlur(frame, (71, 51), 0)
+  blur_size = int(blurSlider.get())
+  # Ensure blur size is odd
+  if blur_size % 2 == 0:
+    blur_size += 1
+  frame = cv.GaussianBlur(frame, (blur_size, blur_size), 0)
   save_frame = frame
+  blurValueLabel.configure(text=f"Blur: {blur_size}")
   pilImage = Image.fromarray(frame)
   
   ctkImage = ctk.CTkImage(light_image=pilImage, dark_image=pilImage, size=(400,300))
@@ -42,7 +47,10 @@ imageLabel.pack(pady=30)
 
 sliderFrame = ctk.CTkFrame(root, fg_color='transparent', bg_color='transparent')
 sliderFrame.pack()
-blurSlider = ctk.CTkSlider(sliderFrame, width=300, height=30,)
+blurValueLabel = ctk.CTkLabel(sliderFrame, text="Blur: 71")
+blurValueLabel.pack()
+blurSlider = ctk.CTkSlider(sliderFrame, width=300, height=30, from_=3, to=101, number_of_steps=49)
+blurSlider.set(71)
 blurSlider.pack()
 
 cframe = ctk.CTkFrame(root , fg_color='transparent', bg_color='transparent')
